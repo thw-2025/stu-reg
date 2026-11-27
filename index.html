@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="blue">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>ระบบรับสมัครนักเรียน ม.1 และ ม.4 | โรงเรียนท่ายางวิทยา</title>
+  <link id="dynamicFavicon" rel="icon" type="image/png" href="">
+
+  <!-- Fonts: Prompt & Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <script>
+  window.GAS_URL"https://script.google.com/macros/s/AKfycbzXWTOO4MEDkMv2q34RKf69lI80gDL5iENJCYvWFk2J3xAXzupX8tQCvNprdXHASzRK/exec";
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'sans-serif'],
+            display: ['Prompt', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: rgba(37, 99, 235, 0.12);
+      --primary-grad: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    }
+    html[data-theme="purple"] {
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --primary-soft: rgba(124, 58, 237, 0.12);
+      --primary-grad: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    }
+    html[data-theme="green"] {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-soft: rgba(5, 150, 105, 0.12);
+      --primary-grad: linear-gradient(135deg, #059669 0%, #065f46 100%);
+    }
+    html[data-theme="orange"] {
+      --primary: #ea580c;
+      --primary-hover: #c2410c;
+      --primary-soft: rgba(234, 88, 12, 0.12);
+      --primary-grad: linear-gradient(135deg, #ea580c 0%, #9a3412 100%);
+    }
+    html[data-theme="blue"] {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: rgba(37, 99, 235, 0.12);
+      --primary-grad: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: 'Sarabun', sans-serif;
+      font-size: clamp(16px, 1.1vw + 13px, 18px);
+      line-height: 1.65;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Prompt', sans-serif;
+    }
+
+    .bg-theme { background-color: var(--primary); }
+    .bg-theme-grad { background: var(--primary-grad); }
+    .bg-theme-soft { background-color: var(--primary-soft); }
+    .text-theme { color: var(--primary); }
+    .border-theme { border-color: var(--primary); }
+    .btn-theme {
+      background: var(--primary-grad);
+      color: #ffffff;
+      transition: all 0.2s ease;
+    }
+    .btn-theme:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+    .btn-theme:active {
+      transform: scale(0.98);
+    }
+
+    /* Dropdown & Input สวยงาม กดง่ายบนมือถือและแท็บเล็ต */
+    .elegant-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.9rem center;
+      background-size: 1.2rem;
+      padding-right: 2.75rem !important;
+      min-height: 50px;
+    }
+    .elegant-input {
+      min-height: 50px;
+    }
+    .elegant-input:focus, .elegant-select:focus {
+      outline: none;
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+
+    /* บังคับสัดส่วน A4 เมื่อสั่งพิมพ์หรือสร้าง PDF แม้กดจากมือถือ */
+    .a4-force-layout {
+      width: 794px !important;
+      max-width: 794px !important;
+      padding: 36px !important;
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 14pt !important;
+      }
+      .no-print { display: none !important; }
+      #printSheetWrapper { display: block !important; }
+      #printSheetContainer {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      #printSheetContainer * {
+        color: #000000 !important;
+        border-color: #334155 !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 12mm;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen transition-colors duration-300 flex flex-col">
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full border border-slate-200 dark:border-slate-800">
+      <div class="w-12 h-12 border-4 border-slate-200 dark:border-slate-700 rounded-full animate-spin" style="border-top-color: var(--primary);"></div>
+      <p id="loadingText" class="font-display text-base sm:text-lg font-medium text-center">กำลังประมวลผล...</p>
+    </div>
+  </div>
+
+  <!-- Header & Responsive Navigation -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 sm:py-3 gap-2.5">
+        <!-- Logo & School Name -->
+        <div class="flex items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+            <div id="navLogoWrap" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden shadow-sm shrink-0 p-1"></div>
+            <div class="min-w-0">
+              <h1 class="font-display text-lg sm:text-2xl font-bold leading-tight text-slate-900 dark:text-white truncate">
+                โรงเรียนท่ายางวิทยา
+              </h1>
+              <p class="text-xs sm:text-base text-slate-500 dark:text-slate-400 truncate">
+                ระบบรับสมัครนักเรียน ม.1 และ ม.4
+              </p>
+            </div>
+          </div>
+
+          <!-- ปุ่ม Dark/Light ย่อสำหรับมือถือจอเล็ก -->
+          <button onclick="toggleDarkMode()" class="sm:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-300 border border-slate-200 dark:border-slate-700 shrink-0" aria-label="สลับโหมดมืด/สว่าง">
+            <i id="darkModeIconMobile" class="fa-solid fa-moon text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Theme Color Switcher + Dark/Light Mode -->
+        <div class="flex items-center justify-between sm:justify-end gap-2.5 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 sm:py-2 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <span class="text-xs font-display text-slate-500 dark:text-slate-400 sm:hidden">สีธีมเว็บ:</span>
+          <div class="flex items-center gap-2.5" title="เลือกสีธีมเว็บไซต์">
+            <button onclick="setTheme('purple')" data-color-btn="purple" class="w-7 h-7 rounded-full bg-violet-600 ring-offset-2 dark:ring-offset-slate-800 transition-transform hover:scale-110" aria-label="สีม่วง"></button>
+            <button onclick="setTheme('green')" data-color-btn="green" class="w-7 h-7 rounded-full bg-emerald-600 ring-offset-2 dark:ring-offset-slate-800 transition-transform hover:scale-110" aria-label="สีเขียว"></button>
+            <button onclick="setTheme('orange')" data-color-btn="orange" class="w-7 h-7 rounded-full bg-orange-600 ring-offset-2 dark:ring-offset-slate-800 transition-transform hover:scale-110" aria-label="สีส้ม"></button>
+            <button onclick="setTheme('blue')" data-color-btn="blue" class="w-7 h-7 rounded-full bg-blue-600 ring-offset-2 dark:ring-offset-slate-800 transition-transform hover:scale-110" aria-label="สีน้ำเงิน"></button>
+          </div>
+          <div class="hidden sm:block w-px h-6 bg-slate-300 dark:bg-slate-600"></div>
+          <button onclick="toggleDarkMode()" id="darkModeBtn" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm lg:text-base font-medium bg-white dark:bg-slate-700 text-slate-700 dark:text-amber-300 shadow-sm hover:opacity-90 transition">
+            <i id="darkModeIcon" class="fa-solid fa-moon"></i>
+            <span id="darkModeLabel">โหมดมืด</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Responsive Navigation Tabs: 2x2 Grid บนมือถือ, แถวเดียวบนแท็บเล็ตและคอม -->
+      <nav class="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 sm:gap-2 pb-2.5 pt-0.5">
+        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-tab flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-xl font-display font-medium text-sm sm:text-base lg:text-lg transition-all">
+          <i class="fa-solid fa-chart-pie"></i> <span>แดชบอร์ดสถิติ</span>
+        </button>
+        <button onclick="switchTab('apply')" id="tab-apply" class="nav-tab flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-xl font-display font-medium text-sm sm:text-base lg:text-lg transition-all">
+          <i class="fa-solid fa-file-pen"></i> <span>กรอกใบสมัคร</span>
+        </button>
+        <button onclick="switchTab('print')" id="tab-print" class="nav-tab flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-xl font-display font-medium text-sm sm:text-base lg:text-lg transition-all">
+          <i class="fa-solid fa-print"></i> <span>ค้นหา/พิมพ์ใบสมัคร</span>
+        </button>
+        <button onclick="switchTab('admin')" id="tab-admin" class="nav-tab flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-xl font-display font-medium text-sm sm:text-base lg:text-lg transition-all">
+          <i class="fa-solid fa-user-shield"></i> <span>แอดมิน/ตรวจเอกสาร</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8">
+
+    <!-- ==================== 1. DASHBOARD ==================== -->
+    <section id="section-dashboard" class="space-y-6 sm:space-y-8 no-print">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="font-display text-xl sm:text-3xl font-bold">แดชบอร์ดรายงานสถิติการรับสมัคร</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm sm:text-lg">สรุปยอดผู้สมัครแต่ละวัน แยกตามระดับชั้น ม.1 / ม.4 และแผนการเรียน</p>
+        </div>
+        <button onclick="loadDashboard()" class="btn-theme w-full sm:w-auto px-5 py-3 rounded-xl font-display font-medium text-base flex items-center justify-center gap-2 shadow-md">
+          <i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล
+        </button>
+      </div>
+
+      <!-- KPI Cards: 2 คอลัมน์บนมือถือ/แท็บเล็ต, 4 คอลัมน์บนจอใหญ่ -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-lg">ผู้สมัครทั้งหมด</span>
+            <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-theme-soft text-theme flex items-center justify-center text-lg sm:text-xl shrink-0"><i class="fa-solid fa-users"></i></span>
+          </div>
+          <p id="kpiTotal" class="font-display text-3xl sm:text-4xl font-bold mt-2 sm:mt-3">0</p>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">คน (ทุกระดับชั้น)</p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-lg">ระดับชั้น ม.1</span>
+            <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 flex items-center justify-center text-lg sm:text-xl shrink-0"><i class="fa-solid fa-graduation-cap"></i></span>
+          </div>
+          <p id="kpiM1" class="font-display text-3xl sm:text-4xl font-bold mt-2 sm:mt-3 text-sky-600 dark:text-sky-400">0</p>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">คน</p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-lg">ระดับชั้น ม.4</span>
+            <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg sm:text-xl shrink-0"><i class="fa-solid fa-book-open-reader"></i></span>
+          </div>
+          <p id="kpiM4" class="font-display text-3xl sm:text-4xl font-bold mt-2 sm:mt-3 text-amber-600 dark:text-amber-400">0</p>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">คน</p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-lg">อนุมัติเอกสารแล้ว</span>
+            <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg sm:text-xl shrink-0"><i class="fa-solid fa-circle-check"></i></span>
+          </div>
+          <p id="kpiVerified" class="font-display text-3xl sm:text-4xl font-bold mt-2 sm:mt-3 text-emerald-600 dark:text-emerald-400">0</p>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">คน</p>
+        </div>
+      </div>
+
+      <!-- Daily Chart -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+        <h3 class="font-display text-lg sm:text-xl font-bold mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-calendar-days text-theme"></i> สถิติจำนวนผู้สมัครแต่ละวัน (แยก ม.1 และ ม.4)
+        </h3>
+        <div class="h-64 sm:h-80 w-full">
+          <canvas id="dailyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Plan Stats M.1 & M.4 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+          <h3 class="font-display text-lg sm:text-xl font-bold mb-4 flex items-center gap-2">
+            <span class="w-2.5 h-6 sm:w-3 sm:h-7 rounded-full bg-sky-500 inline-block shrink-0"></span>
+            สถิติแยกแผนการเรียน / โปรแกรม (ม.1)
+          </h3>
+          <div id="m1PlanStats" class="space-y-3"></div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+          <h3 class="font-display text-lg sm:text-xl font-bold mb-4 flex items-center gap-2">
+            <span class="w-2.5 h-6 sm:w-3 sm:h-7 rounded-full bg-amber-500 inline-block shrink-0"></span>
+            สถิติแยกแผนการเรียน / โปรแกรม (ม.4)
+          </h3>
+          <div id="m4PlanStats" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- Daily Table -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+        <h3 class="font-display text-lg sm:text-xl font-bold mb-4">ตารางสรุปยอดผู้สมัครรายวัน</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[420px]">
+            <thead>
+              <tr class="border-b-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm sm:text-base">
+                <th class="py-3 px-3 sm:px-4 font-display">วันที่สมัคร</th>
+                <th class="py-3 px-3 sm:px-4 font-display text-center">ม.1 (คน)</th>
+                <th class="py-3 px-3 sm:px-4 font-display text-center">ม.4 (คน)</th>
+                <th class="py-3 px-3 sm:px-4 font-display text-center">รวม (คน)</th>
+              </tr>
+            </thead>
+            <tbody id="dailyTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm sm:text-base"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. APPLICATION FORM ==================== -->
+    <section id="section-apply" class="hidden space-y-5 sm:space-y-6 no-print">
+      <div class="bg-theme-grad rounded-2xl sm:rounded-3xl p-5 sm:p-8 text-white shadow-lg flex flex-col sm:flex-row items-center text-center sm:text-left gap-4 sm:gap-5">
+        <div id="bannerLogoWrap" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/95 p-1.5 shrink-0 flex items-center justify-center shadow-md"></div>
+        <div>
+          <h2 class="font-display text-xl sm:text-3xl font-bold">แบบฟอร์มสมัครเข้าศึกษาต่อออนไลน์</h2>
+          <p class="text-white/90 text-sm sm:text-lg mt-1">
+            โรงเรียนท่ายางวิทยา • ช่องที่มีเครื่องหมาย <span class="font-bold text-amber-300">*</span> จำเป็นต้องกรอก นอกนั้นไม่บังคับกรอก
+          </p>
+        </div>
+      </div>
+
+      <form id="applicationForm" onsubmit="handleFormSubmit(event)" class="space-y-5 sm:space-y-6">
+
+        <!-- Card 1 -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-8 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-5">
+          <h3 class="font-display text-lg sm:text-2xl font-bold flex items-center gap-2.5 sm:gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-theme text-white flex items-center justify-center text-sm sm:text-base shrink-0">1</span>
+            <span>ระดับชั้นและแผนการเรียนที่สมัคร</span>
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <div>
+              <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">ระดับชั้นที่สมัคร</label>
+              <select id="level" name="level" onchange="updatePlanOptions()" class="elegant-select w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                <option value="ม.1">มัธยมศึกษาปีที่ 1 (ม.1)</option>
+                <option value="ม.4">มัธยมศึกษาปีที่ 4 (ม.4)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">แผนการเรียน / ประเภท</label>
+              <select id="plan" name="plan" onchange="updateSubPlanOptions()" class="elegant-select w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"></select>
+            </div>
+
+            <div id="subPlanContainer" class="hidden md:col-span-2 lg:col-span-1">
+              <label id="subPlanLabel" class="block font-display font-medium mb-1.5 text-base sm:text-lg">รอบการสมัคร / ด้านความสามารถ</label>
+              <select id="subPlan" name="subPlan" class="elegant-select w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-theme bg-theme-soft dark:bg-slate-800 font-medium"></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-8 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-5">
+          <h3 class="font-display text-lg sm:text-2xl font-bold flex items-center gap-2.5 sm:gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-theme text-white flex items-center justify-center text-sm sm:text-base shrink-0">2</span>
+            <span>ข้อมูลส่วนตัวผู้สมัคร</span>
+          </h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 sm:gap-6 items-start">
+            <div class="flex flex-col items-center p-4 sm:p-5 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 max-w-xs mx-auto w-full">
+              <div id="photoPreviewBox" class="w-32 h-40 sm:w-36 sm:h-44 rounded-xl bg-slate-200 dark:bg-slate-700 flex flex-col items-center justify-center overflow-hidden mb-3 shadow-inner">
+                <i class="fa-solid fa-user text-4xl text-slate-400"></i>
+                <span class="text-xs sm:text-sm text-slate-400 mt-1">รูปถ่าย 1.5 นิ้ว</span>
+              </div>
+              <label class="btn-theme cursor-pointer px-4 py-3 rounded-xl text-base font-medium text-center w-full shadow-sm">
+                <i class="fa-solid fa-camera mr-1"></i> อัปโหลดรูปผู้สมัคร
+                <input type="file" id="photoFile" accept="image/*" class="hidden" onchange="previewApplicantPhoto(this)">
+              </label>
+              <span id="photoFileName" class="text-xs sm:text-sm text-slate-500 mt-2 text-center truncate w-full">ไม่บังคับ (PNG/JPG)</span>
+            </div>
+
+            <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+              <div>
+                <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">เลขประจำตัวประชาชน (13 หลัก)</label>
+                <input type="text" id="nationalId" maxlength="13" inputmode="numeric" placeholder="เช่น 1769900123456" class="elegant-input w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              </div>
+
+              <div>
+                <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">คำนำหน้าชื่อ</label>
+                <select id="prefix" class="elegant-select w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                  <option value="">-- เลือกคำนำหน้า --</option>
+                  <option value="เด็กชาย">เด็กชาย</option>
+                  <option value="เด็กหญิง">เด็กหญิง</option>
+                  <option value="นาย">นาย</option>
+                  <option value="นางสาว">นางสาว</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">ชื่อ <span class="text-rose-500 font-bold">*</span></label>
+                <input type="text" id="firstName" required placeholder="กรอกชื่อจริง" class="elegant-input w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              </div>
+
+              <div>
+                <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">นามสกุล <span class="text-rose-500 font-bold">*</span></label>
+                <input type="text" id="lastName" required placeholder="กรอกนามสกุล" class="elegant-input w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              </div>
+
+              <div>
+                <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">โรงเรียนที่จบ <span class="text-rose-500 font-bold">*</span></label>
+                <input type="text" id="prevSchool" required placeholder="ระบุชื่อโรงเรียนเดิม" class="elegant-input w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              </div>
+
+              <div>
+                <label class="block font-display font-medium mb-1.5 text-base sm:text-lg">เบอร์โทรศัพท์ติดต่อ <span class="text-rose-500 font-bold">*</span></label>
+                <input type="tel" id="phone" required inputmode="tel" placeholder="เช่น 0812345678" class="elegant-input w-full px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-8 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-6 sm:space-y-8">
+          <h3 class="font-display text-lg sm:text-2xl font-bold flex items-center gap-2.5 sm:gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-theme text-white flex items-center justify-center text-sm sm:text-base shrink-0">3</span>
+            <span>ข้อมูลบิดา มารดา และผู้ปกครอง (ไม่บังคับกรอก)</span>
+          </h3>
+
+          <div>
+            <h4 class="font-display text-base sm:text-lg font-semibold text-theme mb-3"><i class="fa-solid fa-person mr-2"></i>ข้อมูลบิดา</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
+              <input type="text" id="fatherName" placeholder="ชื่อ-นามสกุล บิดา" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <input type="text" id="fatherJob" placeholder="อาชีพบิดา" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <input type="tel" id="fatherPhone" inputmode="tel" placeholder="เบอร์โทรศัพท์บิดา" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-display text-base sm:text-lg font-semibold text-theme mb-3"><i class="fa-solid fa-person-dress mr-2"></i>ข้อมูลมารดา</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
+              <input type="text" id="motherName" placeholder="ชื่อ-นามสกุล มารดา" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <input type="text" id="motherJob" placeholder="อาชีพมารดา" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <input type="tel" id="motherPhone" inputmode="tel" placeholder="เบอร์โทรศัพท์มารดา" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+            </div>
+          </div>
+
+          <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <h4 class="font-display text-base sm:text-lg font-semibold text-theme"><i class="fa-solid fa-user-group mr-2"></i>ข้อมูลผู้ปกครอง</h4>
+              <div class="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-4">
+                <label class="inline-flex items-center gap-2.5 cursor-pointer text-sm sm:text-base font-medium bg-white dark:bg-slate-800 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 shadow-sm">
+                  <input type="checkbox" id="copyFather" onchange="copyParentToGuardian('father')" class="w-5 h-5 accent-blue-600 rounded">
+                  <span>คัดลอกข้อมูลจากบิดา</span>
+                </label>
+                <label class="inline-flex items-center gap-2.5 cursor-pointer text-sm sm:text-base font-medium bg-white dark:bg-slate-800 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 shadow-sm">
+                  <input type="checkbox" id="copyMother" onchange="copyParentToGuardian('mother')" class="w-5 h-5 accent-blue-600 rounded">
+                  <span>คัดลอกข้อมูลจากมารดา</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+              <input type="text" id="guardianName" placeholder="ชื่อ-นามสกุล ผู้ปกครอง" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+              <input type="text" id="guardianRelation" placeholder="ความสัมพันธ์ (บิดา/มารดา/ป้า)" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+              <input type="text" id="guardianJob" placeholder="อาชีพผู้ปกครอง" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+              <input type="tel" id="guardianPhone" inputmode="tel" placeholder="เบอร์โทรศัพท์ผู้ปกครอง" class="elegant-input px-4 py-3 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-8 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-5">
+          <h3 class="font-display text-lg sm:text-2xl font-bold flex items-center gap-2.5 sm:gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-theme text-white flex items-center justify-center text-sm sm:text-base shrink-0">4</span>
+            <span>แนบเอกสารประกอบการสมัคร (ไม่บังคับกรอก)</span>
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+            <div class="p-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+              <label class="block font-display font-semibold text-base sm:text-lg mb-2">
+                <i class="fa-solid fa-file-lines text-theme mr-1"></i> เอกสาร ปพ.1 / ปพ.7
+              </label>
+              <input type="file" id="docPorPorFile" accept=".pdf,image/*" class="w-full text-sm sm:text-base file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:font-medium file:bg-theme-soft file:text-theme">
+            </div>
+
+            <div class="p-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+              <label class="block font-display font-semibold text-base sm:text-lg mb-2">
+                <i class="fa-solid fa-id-card text-theme mr-1"></i> สำเนาบัตรประชาชน
+              </label>
+              <input type="file" id="docIdCardFile" accept=".pdf,image/*" class="w-full text-sm sm:text-base file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:font-medium file:bg-theme-soft file:text-theme">
+            </div>
+
+            <div class="p-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+              <label class="block font-display font-semibold text-base sm:text-lg mb-2">
+                <i class="fa-solid fa-house-chimney-user text-theme mr-1"></i> สำเนาทะเบียนบ้าน
+              </label>
+              <input type="file" id="docHouseRegFile" accept=".pdf,image/*" class="w-full text-sm sm:text-base file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:font-medium file:bg-theme-soft file:text-theme">
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">* รองรับไฟล์รูปภาพหรือ PDF ขนาดไม่เกิน 5 MB ต่อไฟล์</p>
+        </div>
+
+        <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-2">
+          <button type="reset" onclick="resetFormUI()" class="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-2xl border-2 border-slate-300 dark:border-slate-700 font-display text-base sm:text-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            ล้างข้อมูลฟอร์ม
+          </button>
+          <button type="submit" class="btn-theme w-full sm:w-auto px-10 py-4 rounded-2xl font-display text-lg sm:text-xl font-bold shadow-lg flex items-center justify-center gap-3">
+            <i class="fa-solid fa-paper-plane"></i> ส่งใบสมัครออนไลน์
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ==================== 3. SEARCH, PRINT & DOWNLOAD APPLICATION ==================== -->
+    <section id="section-print" class="hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-8 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-5 no-print">
+        <div>
+          <h2 class="font-display text-xl sm:text-3xl font-bold">ค้นหาและพิมพ์ / ดาวน์โหลดใบสมัครออนไลน์</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm sm:text-lg mt-1">
+            ระบบจะไม่แสดงรายชื่อผู้สมัครทั้งหมด กรุณากรอกชื่อและนามสกุลเพื่อค้นหาใบสมัครของท่าน
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
+          <button type="button" onclick="setPrintSearchMode('name')" id="modeBtn-name" class="px-4 py-3 sm:py-2.5 rounded-xl font-display font-medium text-sm sm:text-base transition text-center">
+            <i class="fa-solid fa-user mr-1"></i> ค้นหาด้วย ชื่อ และ นามสกุล
+          </button>
+          <button type="button" onclick="setPrintSearchMode('other')" id="modeBtn-other" class="px-4 py-3 sm:py-2.5 rounded-xl font-display font-medium text-sm sm:text-base transition text-center">
+            <i class="fa-solid fa-id-card mr-1"></i> ค้นหาด้วย เลขบัตร ปชช. / โรงเรียนที่จบ
+          </button>
+        </div>
+
+        <form id="searchByNameForm" onsubmit="searchForPrint(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div>
+            <label class="block font-display font-medium mb-1.5 text-sm sm:text-base">ชื่อจริง (ไม่ต้องใส่คำนำหน้า) <span class="text-rose-500">*</span></label>
+            <input type="text" id="searchFirstName" placeholder="เช่น สมชาย" class="elegant-input w-full px-4 sm:px-5 py-3.5 text-base sm:text-lg rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-display font-medium mb-1.5 text-sm sm:text-base">นามสกุล <span class="text-rose-500">*</span></label>
+            <input type="text" id="searchLastName" placeholder="เช่น ใจดี" class="elegant-input w-full px-4 sm:px-5 py-3.5 text-base sm:text-lg rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          </div>
+          <button type="submit" class="btn-theme w-full px-8 py-4 rounded-2xl font-display text-base sm:text-lg font-bold shadow-md flex items-center justify-center gap-2">
+            <i class="fa-solid fa-magnifying-glass"></i> ค้นหาใบสมัคร
+          </button>
+        </form>
+
+        <form id="searchByOtherForm" onsubmit="searchForPrint(event)" class="hidden flex-col sm:flex-row gap-3">
+          <input type="text" id="searchOtherKeyword" placeholder="กรอกเลขบัตรประชาชน, ชื่อโรงเรียนที่จบ หรือรหัสใบสมัคร..." class="elegant-input flex-1 px-4 sm:px-5 py-3.5 text-base sm:text-lg rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          <button type="submit" class="btn-theme w-full sm:w-auto px-8 py-4 rounded-2xl font-display text-base sm:text-lg font-bold shadow-md flex items-center justify-center gap-2">
+            <i class="fa-solid fa-magnifying-glass"></i> ค้นหาใบสมัคร
+          </button>
+        </form>
+
+        <div id="printSearchResults" class="space-y-3 pt-2"></div>
+      </div>
+
+      <!-- ตัวอย่างและหน้าพิมพ์ใบสมัคร A4 -->
+      <div id="printSheetWrapper" class="hidden space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
+          <div>
+            <button id="backToAdminFromPrintBtn" onclick="switchTab('admin')" class="hidden w-full sm:w-auto justify-center px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 font-display font-semibold text-base hover:opacity-80 items-center gap-2">
+              <i class="fa-solid fa-arrow-left"></i> กลับหน้าแอดมิน
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:flex gap-2.5 sm:gap-3">
+            <button onclick="downloadCurrentPdf()" class="px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-display text-base sm:text-lg font-bold shadow-md flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-file-arrow-down"></i> ดาวน์โหลดใบสมัคร (PDF)
+            </button>
+            <button onclick="window.print()" class="btn-theme px-6 py-3.5 rounded-xl font-display text-base sm:text-lg font-bold shadow-md flex items-center justify-center gap-2">
+              <i class="fa-solid fa-print"></i> สั่งพิมพ์ใบสมัคร
+            </button>
+          </div>
+        </div>
+
+        <div id="printSheetContainer" class="bg-white text-slate-900 rounded-2xl p-5 sm:p-10 lg:p-12 shadow-lg border border-slate-300 max-w-4xl mx-auto"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. ADMIN SECTION ==================== -->
+    <section id="section-admin" class="hidden space-y-6 no-print">
+
+      <!-- Admin Login -->
+      <div id="adminLoginCard" class="max-w-md mx-auto bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200 dark:border-slate-800 space-y-6 my-4 sm:my-8">
+        <div class="text-center space-y-2">
+          <div id="adminLogoWrap" class="w-20 h-20 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto p-2"></div>
+          <h2 class="font-display text-xl sm:text-2xl font-bold">เข้าสู่ระบบผู้ดูแลระบบ</h2>
+          <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">สำหรับเจ้าหน้าที่ตรวจสอบเอกสาร แก้ไข พิมพ์ใบสมัคร และลบข้อมูล</p>
+        </div>
+
+        <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+          <div>
+            <label class="block font-display font-medium mb-1">ชื่อผู้ใช้ (Username)</label>
+            <input type="text" id="adminUsername" required placeholder="กรอกชื่อผู้ใช้" class="elegant-input w-full px-4 py-3.5 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-display font-medium mb-1">รหัสผ่าน (Password)</label>
+            <input type="password" id="adminPassword" required placeholder="กรอกรหัสผ่าน" class="elegant-input w-full px-4 py-3.5 text-base sm:text-lg rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          </div>
+          <button type="submit" class="btn-theme w-full py-4 rounded-xl font-display text-lg font-bold shadow-md">
+            เข้าสู่ระบบ
+          </button>
+        </form>
+      </div>
+
+      <!-- Admin Panel -->
+      <div id="adminPanel" class="hidden space-y-5 sm:space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+          <div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold">ระบบจัดการผู้สมัครและตรวจสอบเอกสาร</h2>
+            <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">ตรวจสอบไฟล์แนบ อนุมัติเอกสาร แก้ไขข้อมูล พิมพ์ใบสมัคร และลบข้อมูล</p>
+          </div>
+          <div class="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-3">
+            <label class="cursor-pointer px-4 py-3 sm:py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-display font-medium text-sm sm:text-base hover:opacity-80 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-image text-theme"></i> เปลี่ยนโลโก้โรงเรียน
+              <input type="file" accept="image/*" class="hidden" onchange="handleAdminLogoUpload(this)">
+            </label>
+            <button onclick="loadAdminApplicants()" class="btn-theme px-5 py-3 sm:py-2.5 rounded-xl font-display font-medium text-sm sm:text-base flex items-center justify-center gap-2">
+              <i class="fa-solid fa-rotate-right"></i> โหลดข้อมูลใหม่
+            </button>
+            <button onclick="adminLogout()" class="px-5 py-3 sm:py-2.5 rounded-xl bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 font-display font-medium text-sm sm:text-base hover:opacity-80 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+          <input type="text" id="adminFilterSearch" oninput="renderAdminTable()" placeholder="ค้นหา ชื่อ เลขบัตร โรงเรียน..." class="elegant-input sm:col-span-2 px-4 py-3 text-base rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          <select id="adminFilterLevel" onchange="renderAdminTable()" class="elegant-select px-4 py-3 text-base rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+            <option value="">ทุกระดับชั้น</option>
+            <option value="ม.1">ระดับชั้น ม.1</option>
+            <option value="ม.4">ระดับชั้น ม.4</option>
+          </select>
+          <select id="adminFilterStatus" onchange="renderAdminTable()" class="elegant-select px-4 py-3 text-base rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+            <option value="">ทุกสถานะเอกสาร</option>
+            <option value="รอตรวจสอบ">รอตรวจสอบ</option>
+            <option value="อนุมัติตรวจสอบแล้ว">อนุมัติตรวจสอบแล้ว</option>
+            <option value="เอกสารไม่ครบถ้วน">เอกสารไม่ครบถ้วน</option>
+          </select>
+        </div>
+
+        <!-- Mobile & Portrait Tablet Card View (แสดงบนจอ < lg) -->
+        <div id="adminCardList" class="lg:hidden space-y-3"></div>
+
+        <!-- Desktop & Landscape Tablet Table View (แสดงบนจอ >= lg) -->
+        <div class="hidden lg:block bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                <tr>
+                  <th class="py-4 px-4 font-display">รหัส / วันที่</th>
+                  <th class="py-4 px-4 font-display">ผู้สมัคร / โรงเรียนเดิม</th>
+                  <th class="py-4 px-4 font-display">ระดับ / แผนการเรียน</th>
+                  <th class="py-4 px-4 font-display">เอกสารแนบ</th>
+                  <th class="py-4 px-4 font-display">สถานะตรวจสอบ</th>
+                  <th class="py-4 px-4 font-display text-center">จัดการ (พิมพ์ / แก้ไข / ลบ)</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal: ตรวจสอบเอกสารและอนุมัติ -->
+  <div id="docReviewModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-2.5 sm:p-4 no-print">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-4 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="font-display text-xl sm:text-2xl font-bold">ตรวจสอบเอกสารผู้สมัคร</h3>
+        <button onclick="closeModal('docReviewModal')" class="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-xl"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="docReviewContent" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- Modal: แก้ไขข้อมูลผู้สมัครครบทุกช่อง -->
+  <div id="editModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-2.5 sm:p-4 no-print">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto p-4 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-5 sm:space-y-6">
+      <div class="flex items-start justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div>
+          <h3 class="font-display text-xl sm:text-2xl font-bold">แก้ไขข้อมูลผู้สมัครทั้งหมด</h3>
+          <p id="editModalSubtitle" class="text-xs sm:text-sm text-theme font-display font-semibold mt-0.5"></p>
+        </div>
+        <button onclick="closeModal('editModal')" class="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-xl shrink-0"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="editForm" onsubmit="handleEditSave(event)" class="space-y-5 sm:space-y-6">
+        <input type="hidden" id="edit_id">
+
+        <!-- ส่วนที่ 1 -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-4">
+          <h4 class="font-display font-bold text-base sm:text-lg text-theme">1. ระดับชั้นและแผนการเรียน</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">ระดับชั้นที่สมัคร</label>
+              <select id="edit_level" onchange="updateEditPlanOptions()" class="elegant-select w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+                <option value="ม.1">ม.1</option>
+                <option value="ม.4">ม.4</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">แผนการเรียน / ประเภท</label>
+              <select id="edit_plan" onchange="updateEditSubPlanOptions()" class="elegant-select w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"></select>
+            </div>
+            <div id="edit_subPlanWrap">
+              <label class="block text-sm font-semibold mb-1">รอบ / ความสามารถพิเศษ</label>
+              <select id="edit_subPlan" class="elegant-select w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ส่วนที่ 2 -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-4">
+          <h4 class="font-display font-bold text-base sm:text-lg text-theme">2. ข้อมูลส่วนตัวผู้สมัคร</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">คำนำหน้าชื่อ</label>
+              <select id="edit_prefix" class="elegant-select w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+                <option value="">-- ไม่ระบุ --</option>
+                <option value="เด็กชาย">เด็กชาย</option>
+                <option value="เด็กหญิง">เด็กหญิง</option>
+                <option value="นาย">นาย</option>
+                <option value="นางสาว">นางสาว</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">ชื่อ <span class="text-rose-500">*</span></label>
+              <input type="text" id="edit_firstName" required class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">นามสกุล <span class="text-rose-500">*</span></label>
+              <input type="text" id="edit_lastName" required class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">เลขประจำตัวประชาชน</label>
+              <input type="text" id="edit_nationalId" maxlength="13" inputmode="numeric" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">โรงเรียนที่จบ <span class="text-rose-500">*</span></label>
+              <input type="text" id="edit_prevSchool" required class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">เบอร์โทรศัพท์ติดต่อ <span class="text-rose-500">*</span></label>
+              <input type="tel" id="edit_phone" required inputmode="tel" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+          </div>
+        </div>
+
+        <!-- ส่วนที่ 3 -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-4">
+          <h4 class="font-display font-bold text-base sm:text-lg text-theme">3. ข้อมูลบิดาและมารดา</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">ชื่อ-นามสกุล บิดา</label>
+              <input type="text" id="edit_fatherName" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">อาชีพบิดา</label>
+              <input type="text" id="edit_fatherJob" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">เบอร์โทรศัพท์บิดา</label>
+              <input type="tel" id="edit_fatherPhone" inputmode="tel" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 pt-3 border-t border-slate-200 dark:border-slate-700">
+            <div>
+              <label class="block text-sm font-semibold mb-1">ชื่อ-นามสกุล มารดา</label>
+              <input type="text" id="edit_motherName" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">อาชีพมารดา</label>
+              <input type="text" id="edit_motherJob" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">เบอร์โทรศัพท์มารดา</label>
+              <input type="tel" id="edit_motherPhone" inputmode="tel" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+          </div>
+        </div>
+
+        <!-- ส่วนที่ 4 -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h4 class="font-display font-bold text-base sm:text-lg text-theme">4. ข้อมูลผู้ปกครอง</h4>
+            <div class="grid grid-cols-2 sm:flex gap-2">
+              <button type="button" onclick="copyEditParentToGuardian('father')" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-medium bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 hover:border-theme">
+                คัดลอกจากบิดา
+              </button>
+              <button type="button" onclick="copyEditParentToGuardian('mother')" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-medium bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 hover:border-theme">
+                คัดลอกจากมารดา
+              </button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">ชื่อ-นามสกุล ผู้ปกครอง</label>
+              <input type="text" id="edit_guardianName" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">ความสัมพันธ์</label>
+              <input type="text" id="edit_guardianRelation" placeholder="เช่น บิดา / มารดา" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">อาชีพผู้ปกครอง</label>
+              <input type="text" id="edit_guardianJob" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">เบอร์โทรศัพท์ผู้ปกครอง</label>
+              <input type="tel" id="edit_guardianPhone" inputmode="tel" placeholder="ไม่ระบุ" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+            </div>
+          </div>
+        </div>
+
+        <!-- ส่วนที่ 5 -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-4">
+          <h4 class="font-display font-bold text-base sm:text-lg text-theme">5. รูปถ่ายและเอกสารแนบ (อัปโหลดเปลี่ยนไฟล์ใหม่ได้)</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+            <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-sm">รูปถ่ายผู้สมัคร</span>
+                <span id="edit_link_photo"></span>
+              </div>
+              <input type="file" id="edit_photoFile" accept="image/*" class="w-full text-sm">
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-sm">เอกสาร ปพ.1 / ปพ.7</span>
+                <span id="edit_link_porpor"></span>
+              </div>
+              <input type="file" id="edit_docPorPorFile" accept=".pdf,image/*" class="w-full text-sm">
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-sm">สำเนาบัตรประชาชน</span>
+                <span id="edit_link_idcard"></span>
+              </div>
+              <input type="file" id="edit_docIdCardFile" accept=".pdf,image/*" class="w-full text-sm">
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-sm">สำเนาทะเบียนบ้าน</span>
+                <span id="edit_link_housereg"></span>
+              </div>
+              <input type="file" id="edit_docHouseRegFile" accept=".pdf,image/*" class="w-full text-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- ส่วนที่ 6 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200 dark:border-slate-800">
+          <div>
+            <label class="block text-sm font-semibold mb-1">สถานะการตรวจสอบเอกสาร</label>
+            <select id="edit_docStatus" class="elegant-select w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <option value="รอตรวจสอบ">รอตรวจสอบ</option>
+              <option value="อนุมัติตรวจสอบแล้ว">อนุมัติตรวจสอบแล้ว</option>
+              <option value="เอกสารไม่ครบถ้วน">เอกสารไม่ครบถ้วน</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">หมายเหตุจากเจ้าหน้าที่</label>
+            <input type="text" id="edit_adminNote" placeholder="เช่น เอกสารครบถ้วน / ขาดสำเนาทะเบียนบ้าน" class="elegant-input w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <button type="button" onclick="printFromEditModal()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 font-display font-semibold flex items-center justify-center gap-2 hover:opacity-80">
+            <i class="fa-solid fa-print"></i> พิมพ์ใบสมัครนี้
+          </button>
+          <div class="grid grid-cols-2 sm:flex gap-2.5 sm:gap-3">
+            <button type="button" onclick="closeModal('editModal')" class="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 font-medium">ยกเลิก</button>
+            <button type="submit" class="btn-theme px-6 py-3 rounded-xl font-display font-bold shadow-md">บันทึกการแก้ไข</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let SCHOOL_LOGO_URI = '<?!= schoolLogoDataUri ?>';
+    const WEB_APP_URL = '<?= webAppUrl ?>';
+    const INITIAL_APP_ID = '<?= initialAppId ?>';
+
+    const PLAN_CONFIG = {
+      'ม.1': {
+        'ห้องเรียนพิเศษ วิทยาศาสตร์-คณิตศาสตร์': {
+          label: 'เลือกรอบการสมัคร',
+          options: ['รอบ Portfolio', 'รอบสอบคัดเลือก']
+        },
+        'ห้องเรียนปกติ': null,
+        'สมัครรอบความสามารถพิเศษ': {
+          label: 'เลือกด้านความสามารถพิเศษ',
+          options: ['ฟุตบอล', 'ฟุตซอล', 'วอลเลย์บอล', 'เปตอง', 'ดนตรี', 'นาฏศิลป์', 'ศิลปะ']
+        }
+      },
+      'ม.4': {
+        'แผนการเรียนวิทย์-คณิต': null,
+        'แผนการเรียนศิลป์-ภาษา': null,
+        'แผนการเรียนทวิศึกษา': null,
+        'สมัครรอบความสามารถพิเศษ': {
+          label: 'เลือกด้านความสามารถพิเศษ',
+          options: ['ฟุตบอล', 'ฟุตซอล', 'วอลเลย์บอล', 'เปตอง', 'ดนตรี', 'นาฏศิลป์', 'ศิลปะ']
+        }
+      }
+    };
+
+    let dailyChartInstance = null;
+    let adminAuth = null;
+    let adminApplicants = [];
+    let printSearchMode = 'name';
+    let printSearchList = [];
+    let currentPrintRecord = null;
+    let openedPrintFromAdmin = false;
+
+    // ================= INITIALIZATION =================
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAllLogos();
+      initThemeAndDarkMode();
+      updatePlanOptions();
+      setPrintSearchMode('name');
+
+      if (INITIAL_APP_ID) {
+        switchTab('print');
+        showLoading('กำลังเปิดใบสมัครจาก QR Code...');
+        google.script.run
+          .withSuccessHandler(rec => {
+            hideLoading();
+            if (rec) {
+              renderPrintableForm(rec, true, false);
+            } else {
+              switchTab('dashboard');
+            }
+          })
+          .withFailureHandler(() => {
+            hideLoading();
+            switchTab('dashboard');
+          })
+          .getApplicantByIdForPrint(INITIAL_APP_ID);
+      } else {
+        switchTab('dashboard');
+      }
+    });
+
+    function getLogoHtml(sizeClass = 'w-full h-full') {
+      if (SCHOOL_LOGO_URI) {
+        return `<img src="${SCHOOL_LOGO_URI}" alt="โลโก้โรงเรียนท่ายางวิทยา" class="${sizeClass} object-contain rounded-lg">`;
+      }
+      return `
+        <svg viewBox="0 0 64 64" class="${sizeClass}" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="30" fill="var(--primary)" fill-opacity="0.15" stroke="var(--primary)" stroke-width="3"/>
+          <path d="M32 14L48 23V35C48 44 41 50 32 53C23 50 16 44 16 35V23L32 14Z" fill="var(--primary)"/>
+          <text x="32" y="38" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold" font-family="Prompt, sans-serif">ท.ว.</text>
+        </svg>
+      `;
+    }
+
+    function renderAllLogos() {
+      document.getElementById('navLogoWrap').innerHTML = getLogoHtml('w-full h-full');
+      document.getElementById('bannerLogoWrap').innerHTML = getLogoHtml('w-full h-full');
+      document.getElementById('adminLogoWrap').innerHTML = getLogoHtml('w-full h-full');
+      if (SCHOOL_LOGO_URI) {
+        document.getElementById('dynamicFavicon').href = SCHOOL_LOGO_URI;
+      }
+      if (currentPrintRecord) {
+        renderPrintableForm(currentPrintRecord, false, openedPrintFromAdmin);
+      }
+    }
+
+    function generateQrDataUri(r) {
+      try {
+        const qrContent = WEB_APP_URL
+          ? `${WEB_APP_URL}?id=${encodeURIComponent(r.id)}`
+          : `TYW|${r.id}|${r.level}|${r.phone}`;
+        const qr = new QRious({ value: qrContent, size: 160, level: 'M' });
+        return qr.toDataURL('image/png');
+      } catch (e) {
+        return '';
+      }
+    }
+
+    // ================= THEME & DARK MODE =================
+    function initThemeAndDarkMode() {
+      const savedTheme = localStorage.getItem('tyw_theme') || 'blue';
+      setTheme(savedTheme, false);
+      const savedDark = localStorage.getItem('tyw_dark') === 'true';
+      if (savedDark) document.documentElement.classList.add('dark');
+      updateDarkModeButton();
+    }
+
+    function setTheme(color, save = true) {
+      document.documentElement.setAttribute('data-theme', color);
+      if (save) localStorage.setItem('tyw_theme', color);
+      document.querySelectorAll('[data-color-btn]').forEach(btn => {
+        if (btn.getAttribute('data-color-btn') === color) {
+          btn.classList.add('ring-2', 'ring-slate-900', 'dark:ring-white', 'scale-110');
+        } else {
+          btn.classList.remove('ring-2', 'ring-slate-900', 'dark:ring-white', 'scale-110');
+        }
+      });
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('tyw_dark', isDark);
+      updateDarkModeButton();
+      if (dailyChartInstance) loadDashboard();
+    }
+
+    function updateDarkModeButton() {
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('darkModeIcon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      document.getElementById('darkModeIconMobile').className = isDark ? 'fa-solid fa-sun text-lg' : 'fa-solid fa-moon text-lg';
+      document.getElementById('darkModeLabel').textContent = isDark ? 'โหมดสว่าง' : 'โหมดมืด';
+    }
+
+    // ================= NAVIGATION =================
+    function switchTab(tabName) {
+      ['dashboard', 'apply', 'print', 'admin'].forEach(t => {
+        document.getElementById('section-' + t).classList.add('hidden');
+        const btn = document.getElementById('tab-' + t);
+        btn.className = 'nav-tab flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-xl font-display font-medium text-sm sm:text-base lg:text-lg transition-all text-slate-600 dark:text-slate-300 bg-slate-100/70 sm:bg-transparent dark:bg-slate-800/60 sm:dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800';
+      });
+
+      document.getElementById('section-' + tabName).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-' + tabName);
+      activeBtn.className = 'nav-tab flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-xl font-display font-semibold text-sm sm:text-base lg:text-lg transition-all btn-theme shadow-md';
+
+      if (tabName !== 'print') {
+        openedPrintFromAdmin = false;
+        document.getElementById('backToAdminFromPrintBtn').classList.add('hidden');
+      }
+      if (tabName === 'dashboard') loadDashboard();
+    }
+
+    function showLoading(text = 'กำลังประมวลผล...') {
+      document.getElementById('loadingText').textContent = text;
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+      document.getElementById('loadingOverlay').classList.add('flex');
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      document.getElementById('loadingOverlay').classList.remove('flex');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+      document.getElementById(id).classList.remove('flex');
+    }
+
+    // ================= APPLICATION FORM =================
+    function updatePlanOptions() {
+      const level = document.getElementById('level').value;
+      const planSelect = document.getElementById('plan');
+      planSelect.innerHTML = '';
+      Object.keys(PLAN_CONFIG[level]).forEach(planName => {
+        const opt = document.createElement('option');
+        opt.value = planName;
+        opt.textContent = planName;
+        planSelect.appendChild(opt);
+      });
+      updateSubPlanOptions();
+    }
+
+    function updateSubPlanOptions() {
+      const level = document.getElementById('level').value;
+      const plan = document.getElementById('plan').value;
+      const subConfig = PLAN_CONFIG[level][plan];
+      const container = document.getElementById('subPlanContainer');
+      const subSelect = document.getElementById('subPlan');
+      const subLabel = document.getElementById('subPlanLabel');
+
+      subSelect.innerHTML = '';
+      if (subConfig) {
+        subLabel.textContent = subConfig.label;
+        subConfig.options.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item;
+          opt.textContent = item;
+          subSelect.appendChild(opt);
+        });
+        container.classList.remove('hidden');
+      } else {
+        container.classList.add('hidden');
+      }
+    }
+
+    function copyParentToGuardian(source) {
+      const cbFather = document.getElementById('copyFather');
+      const cbMother = document.getElementById('copyMother');
+      if (source === 'father' && cbFather.checked) {
+        cbMother.checked = false;
+        document.getElementById('guardianName').value = document.getElementById('fatherName').value;
+        document.getElementById('guardianRelation').value = 'บิดา';
+        document.getElementById('guardianJob').value = document.getElementById('fatherJob').value;
+        document.getElementById('guardianPhone').value = document.getElementById('fatherPhone').value;
+      } else if (source === 'mother' && cbMother.checked) {
+        cbFather.checked = false;
+        document.getElementById('guardianName').value = document.getElementById('motherName').value;
+        document.getElementById('guardianRelation').value = 'มารดา';
+        document.getElementById('guardianJob').value = document.getElementById('motherJob').value;
+        document.getElementById('guardianPhone').value = document.getElementById('motherPhone').value;
+      }
+    }
+
+    function previewApplicantPhoto(input) {
+      const box = document.getElementById('photoPreviewBox');
+      const nameSpan = document.getElementById('photoFileName');
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          Swal.fire('ไฟล์ใหญ่เกินไป', 'กรุณาเลือกรูปภาพขนาดไม่เกิน 5 MB', 'warning');
+          input.value = '';
+          return;
+        }
+        nameSpan.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = e => {
+          box.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function resetFormUI() {
+      setTimeout(() => {
+        document.getElementById('photoPreviewBox').innerHTML = `<i class="fa-solid fa-user text-4xl text-slate-400"></i><span class="text-xs sm:text-sm text-slate-400 mt-1">รูปถ่าย 1.5 นิ้ว</span>`;
+        document.getElementById('photoFileName').textContent = 'ไม่บังคับ (PNG/JPG)';
+        updatePlanOptions();
+      }, 50);
+    }
+
+    function readFileAsPayload(inputId) {
+      return new Promise((resolve, reject) => {
+        const input = document.getElementById(inputId);
+        if (!input || !input.files || !input.files[0]) {
+          resolve(null);
+          return;
+        }
+        const file = input.files[0];
+        if (file.size > 6 * 1024 * 1024) {
+          reject(new Error(`ไฟล์ "${file.name}" มีขนาดเกิน 6 MB กรุณาย่อขนาดไฟล์ก่อนอัปโหลด`));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = e => resolve({ name: file.name, type: file.type, data: e.target.result });
+        reader.onerror = () => reject(new Error('ไม่สามารถอ่านไฟล์ ' + file.name));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      try {
+        showLoading('กำลังอัปโหลดไฟล์และบันทึกข้อมูลใบสมัคร...');
+        const [photoFile, docPorPorFile, docIdCardFile, docHouseRegFile] = await Promise.all([
+          readFileAsPayload('photoFile'),
+          readFileAsPayload('docPorPorFile'),
+          readFileAsPayload('docIdCardFile'),
+          readFileAsPayload('docHouseRegFile')
+        ]);
+
+        const payload = {
+          level: document.getElementById('level').value,
+          plan: document.getElementById('plan').value,
+          subPlan: document.getElementById('subPlanContainer').classList.contains('hidden') ? '' : document.getElementById('subPlan').value,
+          nationalId: document.getElementById('nationalId').value.trim(),
+          prefix: document.getElementById('prefix').value,
+          firstName: document.getElementById('firstName').value.trim(),
+          lastName: document.getElementById('lastName').value.trim(),
+          prevSchool: document.getElementById('prevSchool').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          fatherName: document.getElementById('fatherName').value.trim(),
+          fatherJob: document.getElementById('fatherJob').value.trim(),
+          fatherPhone: document.getElementById('fatherPhone').value.trim(),
+          motherName: document.getElementById('motherName').value.trim(),
+          motherJob: document.getElementById('motherJob').value.trim(),
+          motherPhone: document.getElementById('motherPhone').value.trim(),
+          guardianName: document.getElementById('guardianName').value.trim(),
+          guardianRelation: document.getElementById('guardianRelation').value.trim(),
+          guardianJob: document.getElementById('guardianJob').value.trim(),
+          guardianPhone: document.getElementById('guardianPhone').value.trim(),
+          photoFile, docPorPorFile, docIdCardFile, docHouseRegFile
+        };
+
+        google.script.run
+          .withSuccessHandler(res => {
+            hideLoading();
+            if (res.success) {
+              document.getElementById('applicationForm').reset();
+              resetFormUI();
+              Swal.fire({
+                icon: 'success',
+                title: 'บันทึกใบสมัครสำเร็จ!',
+                html: `รหัสใบสมัครของคุณคือ <b class="text-xl text-blue-600">${res.appId}</b><br>ต้องการพิมพ์หรือดาวน์โหลดใบสมัครเลยหรือไม่?`,
+                showCancelButton: true,
+                confirmButtonText: 'พิมพ์ / ดาวน์โหลดใบสมัคร',
+                cancelButtonText: 'กลับหน้าแดชบอร์ด'
+              }).then(choice => {
+                if (choice.isConfirmed) {
+                  switchTab('print');
+                  document.getElementById('printSearchResults').innerHTML = '';
+                  renderPrintableForm(res.record, true, false);
+                } else {
+                  switchTab('dashboard');
+                }
+              });
+            } else {
+              Swal.fire('เกิดข้อผิดพลาด', res.message || 'ไม่สามารถบันทึกข้อมูลได้', 'error');
+            }
+          })
+          .withFailureHandler(err => {
+            hideLoading();
+            Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+          })
+          .submitApplication(payload);
+      } catch (err) {
+        hideLoading();
+        Swal.fire('ข้อผิดพลาดไฟล์แนบ', err.message, 'warning');
+      }
+    }
+
+    // ================= DASHBOARD =================
+    function loadDashboard() {
+      showLoading('กำลังโหลดสถิติการรับสมัคร...');
+      google.script.run
+        .withSuccessHandler(stats => {
+          hideLoading();
+          renderDashboard(stats);
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          Swal.fire('โหลดข้อมูลไม่สำเร็จ', err.message, 'error');
+        })
+        .getDashboardStats();
+    }
+
+    function formatThaiDate(dateKey) {
+      if (!dateKey || !dateKey.includes('-')) return dateKey;
+      const [y, m, d] = dateKey.split('-');
+      const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      return `${parseInt(d)} ${months[parseInt(m) - 1]} ${parseInt(y) + 543}`;
+    }
+
+    function renderDashboard(stats) {
+      document.getElementById('kpiTotal').textContent = stats.total.toLocaleString();
+      document.getElementById('kpiM1').textContent = stats.m1Total.toLocaleString();
+      document.getElementById('kpiM4').textContent = stats.m4Total.toLocaleString();
+      document.getElementById('kpiVerified').textContent = stats.verifiedCount.toLocaleString();
+
+      renderPlanStatList('m1PlanStats', stats.m1Plans, stats.m1Total, 'bg-sky-500');
+      renderPlanStatList('m4PlanStats', stats.m4Plans, stats.m4Total, 'bg-amber-500');
+
+      const dates = Object.keys(stats.daily).sort();
+      const labels = dates.map(formatThaiDate);
+      const m1Series = dates.map(d => stats.daily[d].m1);
+      const m4Series = dates.map(d => stats.daily[d].m4);
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#e2e8f0' : '#334155';
+      const gridColor = isDark ? 'rgba(148,163,184,0.15)' : 'rgba(148,163,184,0.25)';
+
+      const ctx = document.getElementById('dailyChart').getContext('2d');
+      if (dailyChartInstance) dailyChartInstance.destroy();
+      dailyChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels.length ? labels : ['ยังไม่มีข้อมูล'],
+          datasets: [
+            { label: 'ระดับชั้น ม.1', data: m1Series.length ? m1Series : [0], backgroundColor: '#0ea5e9', borderRadius: 6 },
+            { label: 'ระดับชั้น ม.4', data: m4Series.length ? m4Series : [0], backgroundColor: '#f59e0b', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: textColor, font: { family: 'Prompt', size: 13 } } } },
+          scales: {
+            x: { ticks: { color: textColor, font: { family: 'Sarabun', size: 12 } }, grid: { display: false } },
+            y: { beginAtZero: true, ticks: { stepSize: 1, color: textColor }, grid: { color: gridColor } }
+          }
+        }
+      });
+
+      const tbody = document.getElementById('dailyTableBody');
+      if (!dates.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400">ยังไม่มีข้อมูลผู้สมัคร</td></tr>`;
+      } else {
+        tbody.innerHTML = dates.slice().reverse().map(d => `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+            <td class="py-3 px-3 sm:px-4 font-medium">${formatThaiDate(d)}</td>
+            <td class="py-3 px-3 sm:px-4 text-center font-semibold text-sky-600 dark:text-sky-400">${stats.daily[d].m1}</td>
+            <td class="py-3 px-3 sm:px-4 text-center font-semibold text-amber-600 dark:text-amber-400">${stats.daily[d].m4}</td>
+            <td class="py-3 px-3 sm:px-4 text-center font-bold">${stats.daily[d].total}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function renderPlanStatList(containerId, planMap, levelTotal, barClass) {
+      const container = document.getElementById(containerId);
+      const entries = Object.entries(planMap).sort((a, b) => b[1] - a[1]);
+      if (!entries.length) {
+        container.innerHTML = `<p class="text-slate-400 py-4 text-center text-sm sm:text-base">ยังไม่มีผู้สมัครในระดับชั้นนี้</p>`;
+        return;
+      }
+      container.innerHTML = entries.map(([name, count]) => {
+        const pct = levelTotal > 0 ? Math.round((count / levelTotal) * 100) : 0;
+        return `
+          <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+            <div class="flex justify-between items-start sm:items-center mb-1.5 gap-2">
+              <span class="font-medium text-sm sm:text-base leading-snug">${name}</span>
+              <span class="font-display font-bold text-base sm:text-lg whitespace-nowrap shrink-0">${count} คน <span class="text-xs sm:text-sm font-normal text-slate-400">(${pct}%)</span></span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div class="${barClass} h-full rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ================= SEARCH, PRINT & PDF DOWNLOAD =================
+    function setPrintSearchMode(mode) {
+      printSearchMode = mode;
+      const btnName = document.getElementById('modeBtn-name');
+      const btnOther = document.getElementById('modeBtn-other');
+      const formName = document.getElementById('searchByNameForm');
+      const formOther = document.getElementById('searchByOtherForm');
+
+      if (mode === 'name') {
+        btnName.className = 'px-4 py-3 sm:py-2.5 rounded-xl font-display font-semibold text-sm sm:text-base transition btn-theme shadow-sm text-center';
+        btnOther.className = 'px-4 py-3 sm:py-2.5 rounded-xl font-display font-medium text-sm sm:text-base transition bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-center';
+        formName.classList.remove('hidden');
+        formName.classList.add('grid');
+        formOther.classList.add('hidden');
+        formOther.classList.remove('flex');
+      } else {
+        btnOther.className = 'px-4 py-3 sm:py-2.5 rounded-xl font-display font-semibold text-sm sm:text-base transition btn-theme shadow-sm text-center';
+        btnName.className = 'px-4 py-3 sm:py-2.5 rounded-xl font-display font-medium text-sm sm:text-base transition bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-center';
+        formOther.classList.remove('hidden');
+        formOther.classList.add('flex');
+        formName.classList.add('hidden');
+        formName.classList.remove('grid');
+      }
+      document.getElementById('printSearchResults').innerHTML = '';
+      document.getElementById('printSheetWrapper').classList.add('hidden');
+    }
+
+    function searchForPrint(e) {
+      if (e) e.preventDefault();
+      let criteria = { mode: printSearchMode };
+
+      if (printSearchMode === 'name') {
+        const fn = document.getElementById('searchFirstName').value.trim();
+        const ln = document.getElementById('searchLastName').value.trim();
+        if (!fn || !ln) {
+          Swal.fire('กรุณากรอกชื่อและนามสกุล', 'โปรดกรอกทั้งชื่อจริงและนามสกุลของผู้สมัครให้ครบถ้วน', 'info');
+          return;
+        }
+        criteria.firstName = fn;
+        criteria.lastName = ln;
+      } else {
+        const kw = document.getElementById('searchOtherKeyword').value.trim();
+        if (kw.length < 3) {
+          Swal.fire('คำค้นหาสั้นเกินไป', 'กรุณากรอกเลขบัตรประชาชน โรงเรียนที่จบ หรือรหัสใบสมัครอย่างน้อย 3 ตัวอักษร', 'info');
+          return;
+        }
+        criteria.keyword = kw;
+      }
+
+      showLoading('กำลังค้นหาข้อมูลใบสมัคร...');
+      google.script.run
+        .withSuccessHandler(list => {
+          hideLoading();
+          printSearchList = list || [];
+          const box = document.getElementById('printSearchResults');
+          document.getElementById('printSheetWrapper').classList.add('hidden');
+
+          if (!printSearchList.length) {
+            box.innerHTML = `<div class="p-5 text-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 text-sm sm:text-base">ไม่พบข้อมูลใบสมัครที่ตรงกับเงื่อนไขที่ระบุ กรุณาตรวจสอบการสะกดชื่อ-นามสกุลอีกครั้ง</div>`;
+            return;
+          }
+
+          box.innerHTML = printSearchList.map((item, idx) => `
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-display font-bold text-theme text-base sm:text-lg">${item.id}</span>
+                  <span class="px-2.5 py-0.5 rounded-lg text-xs sm:text-sm font-semibold bg-sky-100 text-sky-700">${item.level}</span>
+                  ${getStatusBadge(item.docStatus)}
+                </div>
+                <p class="font-display text-lg sm:text-xl font-semibold mt-1">${item.prefix}${item.firstName} ${item.lastName}</p>
+                <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">โรงเรียนเดิม: ${item.prevSchool} • ${item.plan}${item.subPlan ? ' (' + item.subPlan + ')' : ''}</p>
+              </div>
+              <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-2.5">
+                <button onclick="viewPrintRecord(${idx})" class="px-4 py-3 sm:py-2.5 rounded-xl border-2 border-slate-300 dark:border-slate-600 font-display font-medium text-sm sm:text-base hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-eye"></i> ดูใบสมัคร
+                </button>
+                <button onclick="quickPrintRecord(${idx})" class="btn-theme px-5 py-3 sm:py-2.5 rounded-xl font-display font-semibold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm">
+                  <i class="fa-solid fa-print"></i> สั่งพิมพ์
+                </button>
+                <button onclick="quickDownloadRecord(${idx})" class="px-5 py-3 sm:py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-display font-semibold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition">
+                  <i class="fa-solid fa-file-arrow-down"></i> โหลดใบสมัคร (PDF)
+                </button>
+              </div>
+            </div>
+          `).join('');
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+        })
+        .searchApplicantsForPrint(criteria);
+    }
+
+    function viewPrintRecord(idx) {
+      const r = printSearchList[idx];
+      if (!r) return;
+      renderPrintableForm(r, true, false);
+    }
+
+    function quickPrintRecord(idx) {
+      const r = printSearchList[idx];
+      if (!r) return;
+      renderPrintableForm(r, false, false);
+      setTimeout(() => window.print(), 250);
+    }
+
+    function quickDownloadRecord(idx) {
+      const r = printSearchList[idx];
+      if (!r) return;
+      renderPrintableForm(r, false, false);
+      setTimeout(() => downloadCurrentPdf(), 250);
+    }
+
+    // แสดงใบสมัคร A4 รองรับทั้งหน้าจอมือถือ/แท็บเล็ต และคงสัดส่วน A4 เมื่อพิมพ์หรือสร้าง PDF
+    function renderPrintableForm(r, shouldScroll = true, fromAdmin = false) {
+      currentPrintRecord = r;
+      openedPrintFromAdmin = fromAdmin;
+
+      const backBtn = document.getElementById('backToAdminFromPrintBtn');
+      if (fromAdmin) {
+        backBtn.classList.remove('hidden');
+        backBtn.classList.add('inline-flex');
+      } else {
+        backBtn.classList.add('hidden');
+        backBtn.classList.remove('inline-flex');
+      }
+
+      const wrapper = document.getElementById('printSheetWrapper');
+      const sheet = document.getElementById('printSheetContainer');
+      const fullPlan = r.subPlan ? `${r.plan} (${r.subPlan})` : r.plan;
+      const photoSrc = r.photoDataUri || r.photoUrl;
+      const qrDataUri = generateQrDataUri(r);
+
+      sheet.innerHTML = `
+        <div class="flex flex-col sm:flex-row print:flex-row items-center sm:items-start print:items-start justify-between gap-4 border-b-2 border-slate-800 pb-4 mb-5 text-center sm:text-left print:text-left">
+          <div class="flex flex-col sm:flex-row print:flex-row items-center gap-3 sm:gap-4">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 print:w-20 print:h-20 flex items-center justify-center shrink-0">${getLogoHtml('w-full h-full')}</div>
+            <div>
+              <h2 class="font-display text-lg sm:text-2xl print:text-2xl font-bold text-slate-900">ใบสมัครเข้าศึกษาต่อระดับชั้น${r.level === 'ม.1' ? 'มัธยมศึกษาปีที่ 1 (ม.1)' : 'มัธยมศึกษาปีที่ 4 (ม.4)'}</h2>
+              <p class="text-base sm:text-lg print:text-lg font-semibold text-slate-800">โรงเรียนท่ายางวิทยา สำนักงานเขตพื้นที่การศึกษามัธยมศึกษาเพชรบุรี</p>
+              <p class="text-xs sm:text-sm print:text-sm text-slate-600 mt-0.5">เลขที่ใบสมัคร: <b>${r.id}</b> | วันที่สมัคร: ${r.timestamp} | สถานะ: <b>${r.docStatus}</b></p>
+            </div>
+          </div>
+          <div class="w-24 h-32 sm:w-28 sm:h-36 print:w-28 print:h-36 border-2 border-slate-400 flex items-center justify-center overflow-hidden bg-slate-50 shrink-0">
+            ${photoSrc
+              ? `<img src="${photoSrc}" class="w-full h-full object-cover">`
+              : `<span class="text-xs text-slate-400 text-center p-2">ติดรูปถ่าย<br>1.5 นิ้ว</span>`}
+          </div>
+        </div>
+
+        <div class="space-y-4 sm:space-y-5 text-sm sm:text-base print:text-base text-slate-900">
+          <div class="p-3 sm:p-3.5 bg-slate-100 rounded-xl border border-slate-300">
+            <p><b>ระดับชั้นที่สมัคร:</b> ${r.level} &nbsp;&nbsp;|&nbsp;&nbsp; <b>แผนการเรียน / โปรแกรม:</b> ${fullPlan}</p>
+          </div>
+
+          <div>
+            <h3 class="font-display font-bold text-base sm:text-lg print:text-lg border-b border-slate-300 pb-1 mb-2">1. ข้อมูลส่วนตัวผู้สมัคร</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-y-2 gap-x-6">
+              <p><b>ชื่อ-นามสกุล:</b> ${r.prefix}${r.firstName} ${r.lastName}</p>
+              <p><b>เลขประจำตัวประชาชน:</b> ${r.nationalId || '-'}</p>
+              <p><b>โรงเรียนที่จบ:</b> ${r.prevSchool}</p>
+              <p><b>เบอร์โทรศัพท์:</b> ${r.phone}</p>
+            </div>
+          </div>
+
+
+          <div class="flex flex-col sm:flex-row print:flex-row items-start justify-between gap-4 border-t border-slate-200 pt-3">
+            <div class="flex-1 w-full">
+              <h3 class="font-display font-bold text-base sm:text-lg print:text-lg border-b border-slate-300 pb-1 mb-2">2. หลักฐานเอกสารที่แนบในระบบ</h3>
+              <div class="flex flex-col sm:flex-row print:flex-row flex-wrap gap-2 sm:gap-6 print:gap-6">
+                <span>${r.docPorPorUrl ? '☑' : '☐'} ระเบียนแสดงผลการเรียน (ปพ.)</span>
+                <span>${r.docIdCardUrl ? '☑' : '☐'} สำเนาบัตรประชาชน</span>
+                <span>${r.docHouseRegUrl ? '☑' : '☐'} สำเนาทะเบียนบ้าน</span>
+              </div>
+              ${r.adminNote ? `<p class="mt-2 text-xs sm:text-sm print:text-sm"><b>หมายเหตุเจ้าหน้าที่:</b> ${r.adminNote}</p>` : ''}
+            </div>
+
+            ${qrDataUri ? `
+              <div class="flex flex-col items-center p-2 border border-slate-300 rounded-xl bg-white shrink-0 self-center sm:self-start print:self-start">
+                <img src="${qrDataUri}" alt="QR Code ใบสมัคร" class="w-24 h-24 object-contain">
+                <span class="text-[11px] font-display font-semibold mt-1 text-slate-700">${r.id}</span>
+                <span class="text-[10px] text-slate-500">สแกนตรวจสอบใบสมัคร</span>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-8 pt-6 sm:pt-8 print:pt-8 text-center">
+            <div>
+              <p>ลงชื่อ........................................................ผู้สมัคร</p>
+              <p class="mt-1">(${r.prefix}${r.firstName} ${r.lastName})</p>
+            </div>
+            <div>
+              <p>ลงชื่อ........................................................เจ้าหน้าที่รับสมัคร</p>
+              <p class="mt-1">(........................................................)</p>
+              <p class="text-xs mt-1">${r.verifiedAt ? 'ตรวจสอบเอกสารเมื่อ: ' + r.verifiedAt : 'วันที่......./......./..........'}</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      wrapper.classList.remove('hidden');
+      if (shouldScroll) wrapper.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // สร้าง PDF ขนาด A4 เสมอแม้กดดาวน์โหลดจากมือถือหรือแท็บเล็ต
+    function downloadCurrentPdf() {
+      if (!currentPrintRecord) return;
+      const element = document.getElementById('printSheetContainer');
+      const fileName = `ใบสมัคร_${currentPrintRecord.id}_${currentPrintRecord.firstName}_${currentPrintRecord.lastName}.pdf`;
+      showLoading('กำลังสร้างไฟล์ PDF ใบสมัคร...');
+
+      element.classList.add('a4-force-layout');
+
+      const opt = {
+        margin: 8,
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 900 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        element.classList.remove('a4-force-layout');
+        hideLoading();
+      }).catch(() => {
+        element.classList.remove('a4-force-layout');
+        hideLoading();
+        Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้', 'กรุณากดปุ่ม "สั่งพิมพ์ใบสมัคร" แล้วเลือกบันทึกเป็น PDF แทน', 'warning');
+      });
+    }
+
+    // ================= ADMIN & DOCUMENT VERIFICATION =================
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('adminUsername').value.trim();
+      const password = document.getElementById('adminPassword').value;
+
+      showLoading('กำลังตรวจสอบสิทธิ์...');
+      google.script.run
+        .withSuccessHandler(res => {
+          hideLoading();
+          if (res.success) {
+            adminAuth = { username, password };
+            document.getElementById('adminLoginCard').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            loadAdminApplicants();
+          } else {
+            Swal.fire('เข้าสู่ระบบไม่สำเร็จ', res.message, 'error');
+          }
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          Swal.fire('ข้อผิดพลาด', err.message, 'error');
+        })
+        .adminLogin(username, password);
+    }
+
+    function adminLogout() {
+      adminAuth = null;
+      adminApplicants = [];
+      document.getElementById('adminUsername').value = '';
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('adminPanel').classList.add('hidden');
+      document.getElementById('adminLoginCard').classList.remove('hidden');
+    }
+
+    function handleAdminLogoUpload(input) {
+      if (!adminAuth || !input.files || !input.files[0]) return;
+      const file = input.files[0];
+      if (file.size > 4 * 1024 * 1024) {
+        Swal.fire('ไฟล์ใหญ่เกินไป', 'กรุณาเลือกรูปโลโก้ขนาดไม่เกิน 4 MB', 'warning');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = e => {
+        showLoading('กำลังอัปเดตโลโก้เว็บและโลโก้ใบสมัคร...');
+        google.script.run
+          .withSuccessHandler(res => {
+            hideLoading();
+            input.value = '';
+            if (res.success) {
+              SCHOOL_LOGO_URI = res.logoDataUri;
+              renderAllLogos();
+              Swal.fire('เปลี่ยนโลโก้สำเร็จ!', 'โลโก้หน้าเว็บและโลโก้ใบสมัครทั้งหมดถูกอัปเดตเรียบร้อยแล้ว', 'success');
+            } else {
+              Swal.fire('เกิดข้อผิดพลาด', res.message, 'error');
+            }
+          })
+          .withFailureHandler(err => {
+            hideLoading();
+            Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+          })
+          .uploadSchoolLogoAdmin(adminAuth, { name: file.name, type: file.type, data: e.target.result });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadAdminApplicants() {
+      if (!adminAuth) return;
+      showLoading('กำลังโหลดรายชื่อผู้สมัคร...');
+      google.script.run
+        .withSuccessHandler(list => {
+          hideLoading();
+          adminApplicants = list;
+          renderAdminTable();
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+        })
+        .getAllApplicantsAdmin(adminAuth);
+    }
+
+    function getStatusBadge(status) {
+      if (status === 'อนุมัติตรวจสอบแล้ว') {
+        return `<span class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"><i class="fa-solid fa-circle-check"></i> อนุมัติตรวจสอบแล้ว</span>`;
+      }
+      if (status === 'เอกสารไม่ครบถ้วน') {
+        return `<span class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300"><i class="fa-solid fa-circle-exclamation"></i> เอกสารไม่ครบถ้วน</span>`;
+      }
+      return `<span class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"><i class="fa-solid fa-clock"></i> รอตรวจสอบ</span>`;
+    }
+
+    // แสดงผลทั้งแบบ Card (มือถือ/แท็บเล็ตแนวตั้ง) และ Table (คอม/แท็บเล็ตแนวนอน)
+    function renderAdminTable() {
+      const q = document.getElementById('adminFilterSearch').value.trim().toLowerCase();
+      const lvl = document.getElementById('adminFilterLevel').value;
+      const st = document.getElementById('adminFilterStatus').value;
+
+      const filtered = adminApplicants.filter(a => {
+        const matchQ = !q ||
+          (a.firstName + ' ' + a.lastName).toLowerCase().includes(q) ||
+          a.nationalId.toLowerCase().includes(q) ||
+          a.prevSchool.toLowerCase().includes(q) ||
+          a.id.toLowerCase().includes(q);
+        const matchLvl = !lvl || a.level === lvl;
+        const matchSt = !st || a.docStatus === st;
+        return matchQ && matchLvl && matchSt;
+      });
+
+      const tbody = document.getElementById('adminTableBody');
+      const cardList = document.getElementById('adminCardList');
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-slate-400">ไม่พบข้อมูลผู้สมัคร</td></tr>`;
+        cardList.innerHTML = `<div class="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center text-slate-400 border border-slate-200 dark:border-slate-800">ไม่พบข้อมูลผู้สมัคร</div>`;
+        return;
+      }
+
+      // 1. Render Mobile & Tablet Cards
+      cardList.innerHTML = filtered.map(a => {
+        const docCount = [a.photoUrl, a.docPorPorUrl, a.docIdCardUrl, a.docHouseRegUrl].filter(Boolean).length;
+        return `
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-display font-bold text-theme text-base">${a.id}</span>
+                  <span class="px-2 py-0.5 rounded-md text-xs font-bold bg-sky-100 text-sky-700">${a.level}</span>
+                </div>
+                <p class="font-display font-bold text-lg mt-0.5">${a.prefix}${a.firstName} ${a.lastName}</p>
+              </div>
+              <div class="shrink-0">${getStatusBadge(a.docStatus)}</div>
+            </div>
+
+            <div class="text-sm text-slate-600 dark:text-slate-300 space-y-1 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
+              <p><b>แผนการเรียน:</b> ${a.plan}${a.subPlan ? ' (' + a.subPlan + ')' : ''}</p>
+              <p><b>โรงเรียนเดิม:</b> ${a.prevSchool} | <b>โทร:</b> ${a.phone}</p>
+              <p class="text-xs text-slate-400">สมัครเมื่อ: ${a.timestamp}${a.verifiedAt ? ' • ตรวจเมื่อ: ' + a.verifiedAt : ''}</p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <button onclick="openDocReview('${a.id}')" class="px-3 py-2.5 rounded-xl bg-theme-soft text-theme font-display font-medium text-sm flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-folder-open"></i> เอกสาร (${docCount}/4)
+              </button>
+              <button onclick="adminPrintApplicant('${a.id}')" class="px-3 py-2.5 rounded-xl bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 font-display font-medium text-sm flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-print"></i> พิมพ์ใบสมัคร
+              </button>
+              <button onclick="openEditModal('${a.id}')" class="px-3 py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-display font-medium text-sm flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล
+              </button>
+              <button onclick="confirmDelete('${a.id}')" class="px-3 py-2.5 rounded-xl bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 font-display font-medium text-sm flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-trash"></i> ลบข้อมูล
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 2. Render Desktop Table
+      tbody.innerHTML = filtered.map(a => {
+        const docCount = [a.photoUrl, a.docPorPorUrl, a.docIdCardUrl, a.docHouseRegUrl].filter(Boolean).length;
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+            <td class="py-4 px-4 align-top">
+              <div class="font-display font-bold text-theme">${a.id}</div>
+              <div class="text-sm text-slate-400">${a.timestamp}</div>
+            </td>
+            <td class="py-4 px-4 align-top">
+              <div class="font-semibold">${a.prefix}${a.firstName} ${a.lastName}</div>
+              <div class="text-sm text-slate-500">รร.${a.prevSchool} | โทร: ${a.phone}</div>
+            </td>
+            <td class="py-4 px-4 align-top">
+              <span class="font-semibold">${a.level}</span> - ${a.plan}
+              ${a.subPlan ? `<div class="text-sm text-theme font-medium">(${a.subPlan})</div>` : ''}
+            </td>
+            <td class="py-4 px-4 align-top">
+              <button onclick="openDocReview('${a.id}')" class="px-3.5 py-2 rounded-xl bg-theme-soft text-theme font-medium text-sm hover:opacity-80 flex items-center gap-1.5">
+                <i class="fa-solid fa-folder-open"></i> ตรวจเอกสาร (${docCount}/4)
+              </button>
+            </td>
+            <td class="py-4 px-4 align-top">
+              ${getStatusBadge(a.docStatus)}
+              ${a.verifiedAt ? `<div class="text-xs text-slate-400 mt-1">${a.verifiedAt}</div>` : ''}
+            </td>
+            <td class="py-4 px-4 align-top">
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="adminPrintApplicant('${a.id}')" title="พิมพ์ / ดาวน์โหลดใบสมัคร" class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 hover:opacity-80"><i class="fa-solid fa-print"></i></button>
+                <button onclick="openEditModal('${a.id}')" title="แก้ไขข้อมูลทั้งหมด" class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 hover:opacity-80"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="confirmDelete('${a.id}')" title="ลบข้อมูล" class="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 hover:opacity-80"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function adminPrintApplicant(appId) {
+      showLoading('กำลังเตรียมเอกสารใบสมัครสำหรับพิมพ์...');
+      google.script.run
+        .withSuccessHandler(rec => {
+          hideLoading();
+          if (!rec) {
+            Swal.fire('ไม่พบข้อมูล', 'ไม่สามารถดึงข้อมูลใบสมัครรายการนี้ได้', 'error');
+            return;
+          }
+          switchTab('print');
+          document.getElementById('printSearchResults').innerHTML = '';
+          renderPrintableForm(rec, true, true);
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+        })
+        .getApplicantByIdForPrint(appId);
+    }
+
+    function printFromEditModal() {
+      const appId = document.getElementById('edit_id').value;
+      closeModal('editModal');
+      adminPrintApplicant(appId);
+    }
+
+    function openDocReview(appId) {
+      const a = adminApplicants.find(x => x.id === appId);
+      if (!a) return;
+
+      const docLinkBtn = (url, label, icon) => url
+        ? `<a href="${url}" target="_blank" class="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-theme transition">
+             <span class="font-medium text-sm sm:text-base"><i class="${icon} text-theme mr-2"></i>${label}</span>
+             <span class="text-theme font-semibold text-xs sm:text-sm shrink-0">เปิดดูไฟล์ <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></span>
+           </a>`
+        : `<div class="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-dashed border-slate-300 dark:border-slate-700 text-slate-400">
+             <span class="text-sm sm:text-base"><i class="${icon} mr-2"></i>${label}</span>
+             <span class="text-xs sm:text-sm shrink-0">ไม่ได้แนบไฟล์</span>
+           </div>`;
+
+      document.getElementById('docReviewContent').innerHTML = `
+        <div class="flex items-center gap-3.5 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-800">
+          ${a.photoUrl ? `<img src="${a.photoUrl}" class="w-14 h-18 sm:w-16 sm:h-20 object-cover rounded-xl border shrink-0">` : `<div class="w-14 h-18 sm:w-16 sm:h-20 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0"><i class="fa-solid fa-user text-2xl"></i></div>`}
+          <div class="min-w-0">
+            <p class="font-display text-base sm:text-lg font-bold truncate">${a.id} : ${a.prefix}${a.firstName} ${a.lastName}</p>
+            <p class="text-slate-500 text-sm sm:text-base">${a.level} • ${a.plan}${a.subPlan ? ' (' + a.subPlan + ')' : ''}</p>
+            <div class="mt-1">${getStatusBadge(a.docStatus)}</div>
+          </div>
+        </div>
+
+        <div class="space-y-2.5">
+          ${docLinkBtn(a.photoUrl, 'รูปถ่ายผู้สมัคร', 'fa-solid fa-image')}
+          ${docLinkBtn(a.docPorPorUrl, 'เอกสาร ปพ.1 / ปพ.7', 'fa-solid fa-file-lines')}
+          ${docLinkBtn(a.docIdCardUrl, 'สำเนาบัตรประจำตัวประชาชน', 'fa-solid fa-id-card')}
+          ${docLinkBtn(a.docHouseRegUrl, 'สำเนาทะเบียนบ้าน', 'fa-solid fa-house-chimney-user')}
+        </div>
+
+        <div>
+          <label class="block font-display font-medium mb-1 text-sm sm:text-base">หมายเหตุการตรวจสอบ (ถ้ามี)</label>
+          <input type="text" id="reviewAdminNote" value="${(a.adminNote || '').replace(/"/g, '&quot;')}" placeholder="เช่น เอกสารครบถ้วนถูกต้อง" class="elegant-input w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+        </div>
+
+        <div class="grid grid-cols-1 sm:flex sm:flex-wrap justify-end gap-2.5 sm:gap-3 pt-2">
+          <button onclick="saveDocStatus('${a.id}', 'เอกสารไม่ครบถ้วน')" class="px-5 py-3 rounded-xl bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 font-display font-semibold text-sm sm:text-base">แจ้งเอกสารไม่ครบ</button>
+          <button onclick="saveDocStatus('${a.id}', 'อนุมัติตรวจสอบแล้ว')" class="px-6 py-3 rounded-xl bg-emerald-600 text-white font-display font-bold text-sm sm:text-base shadow-md hover:bg-emerald-700">
+            <i class="fa-solid fa-check-double mr-1"></i> อนุมัติตรวจสอบเอกสารแล้ว
+          </button>
+        </div>
+      `;
+
+      const modal = document.getElementById('docReviewModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function saveDocStatus(appId, status) {
+      const note = document.getElementById('reviewAdminNote').value.trim();
+      showLoading('กำลังบันทึกสถานะเอกสาร...');
+      google.script.run
+        .withSuccessHandler(res => {
+          hideLoading();
+          if (res.success) {
+            closeModal('docReviewModal');
+            Swal.fire('สำเร็จ', `อัปเดตสถานะเป็น "${status}" เรียบร้อยแล้ว`, 'success');
+            loadAdminApplicants();
+          } else {
+            Swal.fire('เกิดข้อผิดพลาด', res.message, 'error');
+          }
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+        })
+        .updateDocStatusAdmin(adminAuth, appId, status, note);
+    }
+
+    // ================= EDIT & DELETE =================
+    function updateEditPlanOptions(selectedPlan = '', selectedSubPlan = '') {
+      const level = document.getElementById('edit_level').value;
+      const planEl = document.getElementById('edit_plan');
+      planEl.innerHTML = '';
+      Object.keys(PLAN_CONFIG[level]).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        if (p === selectedPlan) opt.selected = true;
+        planEl.appendChild(opt);
+      });
+      updateEditSubPlanOptions(selectedSubPlan);
+    }
+
+    function updateEditSubPlanOptions(selectedSubPlan = '') {
+      const level = document.getElementById('edit_level').value;
+      const plan = document.getElementById('edit_plan').value;
+      const cfg = PLAN_CONFIG[level][plan];
+      const wrap = document.getElementById('edit_subPlanWrap');
+      const subEl = document.getElementById('edit_subPlan');
+      subEl.innerHTML = '';
+      if (cfg) {
+        cfg.options.forEach(o => {
+          const opt = document.createElement('option');
+          opt.value = o;
+          opt.textContent = o;
+          if (o === selectedSubPlan) opt.selected = true;
+          subEl.appendChild(opt);
+        });
+        wrap.classList.remove('hidden');
+      } else {
+        wrap.classList.add('hidden');
+      }
+    }
+
+    function copyEditParentToGuardian(source) {
+      if (source === 'father') {
+        document.getElementById('edit_guardianName').value = document.getElementById('edit_fatherName').value;
+        document.getElementById('edit_guardianRelation').value = 'บิดา';
+        document.getElementById('edit_guardianJob').value = document.getElementById('edit_fatherJob').value;
+        document.getElementById('edit_guardianPhone').value = document.getElementById('edit_fatherPhone').value;
+      } else {
+        document.getElementById('edit_guardianName').value = document.getElementById('edit_motherName').value;
+        document.getElementById('edit_guardianRelation').value = 'มารดา';
+        document.getElementById('edit_guardianJob').value = document.getElementById('edit_motherJob').value;
+        document.getElementById('edit_guardianPhone').value = document.getElementById('edit_motherPhone').value;
+      }
+    }
+
+    function renderEditFileBadge(url) {
+      return url
+        ? `<a href="${url}" target="_blank" class="text-xs font-semibold text-emerald-600 hover:underline"><i class="fa-solid fa-up-right-from-square mr-1"></i>เปิดดูไฟล์เดิม</a>`
+        : `<span class="text-xs text-slate-400">ยังไม่มีไฟล์</span>`;
+    }
+
+    function openEditModal(appId) {
+      const a = adminApplicants.find(x => x.id === appId);
+      if (!a) return;
+
+      document.getElementById('edit_id').value = a.id;
+      document.getElementById('editModalSubtitle').textContent = `รหัสใบสมัคร: ${a.id} | วันที่สมัคร: ${a.timestamp}`;
+      document.getElementById('edit_level').value = a.level;
+      updateEditPlanOptions(a.plan, a.subPlan);
+
+      ['prefix', 'firstName', 'lastName', 'nationalId', 'prevSchool', 'phone',
+       'fatherName', 'fatherJob', 'fatherPhone',
+       'motherName', 'motherJob', 'motherPhone',
+       'guardianName', 'guardianRelation', 'guardianJob', 'guardianPhone',
+       'docStatus', 'adminNote'].forEach(f => {
+        const el = document.getElementById('edit_' + f);
+        if (el) el.value = a[f] || '';
+      });
+
+      ['edit_photoFile', 'edit_docPorPorFile', 'edit_docIdCardFile', 'edit_docHouseRegFile'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('edit_link_photo').innerHTML = renderEditFileBadge(a.photoUrl);
+      document.getElementById('edit_link_porpor').innerHTML = renderEditFileBadge(a.docPorPorUrl);
+      document.getElementById('edit_link_idcard').innerHTML = renderEditFileBadge(a.docIdCardUrl);
+      document.getElementById('edit_link_housereg').innerHTML = renderEditFileBadge(a.docHouseRegUrl);
+
+      const modal = document.getElementById('editModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    async function handleEditSave(e) {
+      e.preventDefault();
+      try {
+        showLoading('กำลังบันทึกการแก้ไขและอัปโหลดไฟล์ (ถ้ามี)...');
+
+        const [photoFile, docPorPorFile, docIdCardFile, docHouseRegFile] = await Promise.all([
+          readFileAsPayload('edit_photoFile'),
+          readFileAsPayload('edit_docPorPorFile'),
+          readFileAsPayload('edit_docIdCardFile'),
+          readFileAsPayload('edit_docHouseRegFile')
+        ]);
+
+        const updated = {
+          id: document.getElementById('edit_id').value,
+          level: document.getElementById('edit_level').value,
+          plan: document.getElementById('edit_plan').value,
+          subPlan: document.getElementById('edit_subPlanWrap').classList.contains('hidden') ? '' : document.getElementById('edit_subPlan').value,
+          prefix: document.getElementById('edit_prefix').value.trim(),
+          firstName: document.getElementById('edit_firstName').value.trim(),
+          lastName: document.getElementById('edit_lastName').value.trim(),
+          nationalId: document.getElementById('edit_nationalId').value.trim(),
+          prevSchool: document.getElementById('edit_prevSchool').value.trim(),
+          phone: document.getElementById('edit_phone').value.trim(),
+          fatherName: document.getElementById('edit_fatherName').value.trim(),
+          fatherJob: document.getElementById('edit_fatherJob').value.trim(),
+          fatherPhone: document.getElementById('edit_fatherPhone').value.trim(),
+          motherName: document.getElementById('edit_motherName').value.trim(),
+          motherJob: document.getElementById('edit_motherJob').value.trim(),
+          motherPhone: document.getElementById('edit_motherPhone').value.trim(),
+          guardianName: document.getElementById('edit_guardianName').value.trim(),
+          guardianRelation: document.getElementById('edit_guardianRelation').value.trim(),
+          guardianJob: document.getElementById('edit_guardianJob').value.trim(),
+          guardianPhone: document.getElementById('edit_guardianPhone').value.trim(),
+          docStatus: document.getElementById('edit_docStatus').value,
+          adminNote: document.getElementById('edit_adminNote').value.trim(),
+          photoFile, docPorPorFile, docIdCardFile, docHouseRegFile
+        };
+
+        google.script.run
+          .withSuccessHandler(res => {
+            hideLoading();
+            if (res.success) {
+              closeModal('editModal');
+              Swal.fire('บันทึกสำเร็จ', 'อัปเดตข้อมูลผู้สมัครเรียบร้อยแล้ว', 'success');
+              loadAdminApplicants();
+            } else {
+              Swal.fire('เกิดข้อผิดพลาด', res.message, 'error');
+            }
+          })
+          .withFailureHandler(err => {
+            hideLoading();
+            Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+          })
+          .updateApplicantAdmin(adminAuth, updated);
+      } catch (err) {
+        hideLoading();
+        Swal.fire('ข้อผิดพลาดไฟล์แนบ', err.message, 'warning');
+      }
+    }
+
+    function confirmDelete(appId) {
+      const a = adminApplicants.find(x => x.id === appId);
+      const fullName = a ? `${a.firstName} ${a.lastName}` : '';
+      Swal.fire({
+        title: 'ยืนยันการลบข้อมูล?',
+        html: `ต้องการลบใบสมัคร <b>${appId}</b> (${fullName}) ออกจากระบบใช่หรือไม่?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e11d48',
+        confirmButtonText: 'ลบข้อมูล',
+        cancelButtonText: 'ยกเลิก'
+      }).then(res => {
+        if (res.isConfirmed) {
+          showLoading('กำลังลบข้อมูล...');
+          google.script.run
+            .withSuccessHandler(r => {
+              hideLoading();
+              if (r.success) {
+                Swal.fire('ลบเรียบร้อย', 'ข้อมูลผู้สมัครถูกลบออกจาก Google Sheet แล้ว', 'success');
+                loadAdminApplicants();
+              } else {
+                Swal.fire('เกิดข้อผิดพลาด', r.message, 'error');
+              }
+            })
+            .withFailureHandler(err => {
+              hideLoading();
+              Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+            })
+            .deleteApplicantAdmin(adminAuth, appId);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
